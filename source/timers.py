@@ -9,6 +9,9 @@ class Timer:
         self.is_active = False
         self.command = command
 
+    def set_duration(self, duration):
+        self.duration = duration
+
     def activate(self):
         self.is_active = True
         self.start_time = get_ticks()

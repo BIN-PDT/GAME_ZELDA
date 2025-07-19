@@ -35,3 +35,12 @@ GRAPHIC_PATHS = {
     "Grass": "images/grass",
     "Object": "images/objects",
 }
+# WEAPON DATA.
+WEAPON_DATA = {
+    "axe": {"cooldown": 300, "damage": 20, "image": "images/weapons/axe/full.png"},
+    "sai": {"cooldown": 100, "damage": 10, "image": "images/weapons/sai/full.png"},
+    "sword": {"cooldown": 150, "damage": 15, "image": "images/weapons/sword/full.png"},
+    "lance": {"cooldown": 400, "damage": 30, "image": "images/weapons/lance/full.png"},
+    "rapier": {"cooldown": 50, "damage": 5, "image": "images/weapons/rapier/full.png"},
+}
+WEAPON_TYPES = tuple(WEAPON_DATA.keys())

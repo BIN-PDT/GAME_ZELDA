@@ -5,6 +5,7 @@ import pygame as pg
 from camera import CameraGroup
 from sprites import Tile
 from player import Player
+from weapon import Weapon
 
 
 class Level:
@@ -14,6 +15,8 @@ class Level:
         # GROUP.
         self.group_visible = CameraGroup()
         self.group_obstacle = pg.sprite.Group()
+        # ATTACK.
+        self.current_weapon = None
         # SETUP.
         self.load_map()
 
@@ -49,6 +52,8 @@ class Level:
                                     groups=self.group_visible,
                                     place=place,
                                     group_obstacle=self.group_obstacle,
+                                    create_weapon=self.create_weapon,
+                                    cancel_weapon=self.cancel_weapon,
                                 )
                                 self.group_visible.set_player(self.player)
                         case "Boundary":
@@ -57,6 +62,14 @@ class Level:
                                 place=place,
                                 form=SpriteForm.INVISIBLE,
                             )
+
+    def create_weapon(self):
+        self.current_weapon = Weapon(self.group_visible, self.player)
+
+    def cancel_weapon(self):
+        if self.current_weapon:
+            self.current_weapon.kill()
+            self.current_weapon = None
 
     def run(self):
         self.group_visible.update()

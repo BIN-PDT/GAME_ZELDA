@@ -7,7 +7,7 @@ from sprites import Entity
 
 class Player(Entity):
 
-    def __init__(self, groups, place, group_obstacle):
+    def __init__(self, groups, place, group_obstacle, create_weapon, cancel_weapon):
         super().__init__(groups)
 
         # ANIMATION.
@@ -26,18 +26,38 @@ class Player(Entity):
         self.group_obstacle = group_obstacle
         # ATTACK.
         self.is_attacking = False
+        self.attack_cooldown = 400
+        # WEAPON.
+        self.create_weapon = create_weapon
+        self.cancel_weapon = cancel_weapon
+        self.weapon_index = 0
+        self.weapon = WEAPON_TYPES[self.weapon_index]
+        self.can_switch_weapon = True
         # TIMERS.
-        self.timers = {"attack": Timer(400, command=self.refresh_attack)}
+        self.timers = {
+            "attack": Timer(None, command=self.refresh_attack),
+            "switch_weapon": Timer(200, command=self.refresh_switch_weapon),
+        }
 
     def load_assets(self):
         self.animations = load_image_dict(f"images/player")
 
     def refresh_attack(self):
         self.is_attacking = False
+        self.cancel_weapon()
+
+    def refresh_switch_weapon(self):
+        self.can_switch_weapon = True
 
     def cooldown(self):
         for timer in self.timers.values():
             timer.update()
+
+    def switch_weapon(self):
+        self.weapon_index += 1
+        if self.weapon_index > len(WEAPON_TYPES) - 1:
+            self.weapon_index = 0
+        self.weapon = WEAPON_TYPES[self.weapon_index]
 
     def input(self):
         keys = pg.key.get_pressed()
@@ -64,11 +84,20 @@ class Player(Entity):
             # ATTACK.
             if keys[pg.K_SPACE]:
                 self.is_attacking = True
-                self.timers["attack"].activate()
+                timer = self.timers["attack"]
+                weapon_cooldown = WEAPON_DATA[self.weapon]["cooldown"]
+                timer.set_duration(self.attack_cooldown + weapon_cooldown)
+                timer.activate()
+                self.create_weapon()
 
             if keys[pg.K_LCTRL]:
                 self.is_attacking = True
                 self.timers["attack"].activate()
+        # SWITCH.
+        if keys[pg.K_q] and self.can_switch_weapon:
+            self.can_switch_weapon = False
+            self.timers["switch_weapon"].activate()
+            self.switch_weapon()
 
     def get_status(self):
         # IDLE.
