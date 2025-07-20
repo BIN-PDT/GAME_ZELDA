@@ -6,6 +6,7 @@ from ui import UI
 from camera import CameraGroup
 from sprites import Tile
 from player import Player
+from enemy import Enemy
 from weapon import Weapon
 
 
@@ -50,7 +51,14 @@ class Level:
                                 image=graphic[style][int(col)],
                             )
                         case "Entity":
-                            if col == "394":
+                            if col != "394":
+                                Enemy(
+                                    groups=self.group_visible,
+                                    name=MONSTER_ID[int(col)],
+                                    place=place,
+                                    group_obstacle=self.group_obstacle,
+                                )
+                            else:
                                 self.player = Player(
                                     groups=self.group_visible,
                                     place=place,

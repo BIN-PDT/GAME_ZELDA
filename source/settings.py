@@ -20,6 +20,13 @@ class SpriteForm(StrEnum):
     ENEMY = "Enemy"
 
 
+# ENEMY STATUS.
+class EnemyStatus(StrEnum):
+    IDLE = "idle"
+    MOVE = "move"
+    ATTACK = "attack"
+
+
 # DIMENSION.
 WIDTH, HEIGTH = 1280, 720
 TILE_SIZE = 64
@@ -67,3 +74,51 @@ MAGIC_DATA = {
     "heal": {"strength": 20, "cost": 10, "image": "images/particles/heal/heal.png"},
 }
 MAGIC_TYPES = tuple(MAGIC_DATA.keys())
+# ENEMY DATA.
+MONSTER_ID = {390: "bamboo", 391: "spirit", 392: "raccoon", 393: "squid"}
+MONSTER_DATA = {
+    "squid": {
+        "HP": 100,
+        "ATK": 20,
+        "SPD": 3,
+        "EXP": 100,
+        "RES": 3,
+        "NTC_RAD": 360,
+        "ATK_RAD": 80,
+        "ATK_TYPE": "slash",
+        "ATK_SOUND": "audio/attack/slash.wav",
+    },
+    "raccoon": {
+        "HP": 300,
+        "ATK": 40,
+        "SPD": 2,
+        "EXP": 250,
+        "RES": 3,
+        "NTC_RAD": 400,
+        "ATK_RAD": 120,
+        "ATK_TYPE": "claw",
+        "ATK_SOUND": "audio/attack/claw.wav",
+    },
+    "spirit": {
+        "HP": 100,
+        "ATK": 8,
+        "SPD": 4,
+        "EXP": 110,
+        "RES": 3,
+        "NTC_RAD": 350,
+        "ATK_RAD": 60,
+        "ATK_TYPE": "thunder",
+        "ATK_SOUND": "audio/attack/fireball.wav",
+    },
+    "bamboo": {
+        "HP": 70,
+        "ATK": 6,
+        "SPD": 3,
+        "EXP": 120,
+        "RES": 3,
+        "NTC_RAD": 300,
+        "ATK_RAD": 50,
+        "ATK_TYPE": "leaf_attack",
+        "ATK_SOUND": "audio/attack/slash.wav",
+    },
+}
