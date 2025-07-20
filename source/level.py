@@ -57,6 +57,7 @@ class Level:
                                     group_obstacle=self.group_obstacle,
                                     create_weapon=self.create_weapon,
                                     cancel_weapon=self.cancel_weapon,
+                                    create_magic=self.create_magic,
                                 )
                                 self.group_visible.set_player(self.player)
                                 self.ui.set_player(self.player)
@@ -74,6 +75,11 @@ class Level:
         if self.current_weapon:
             self.current_weapon.kill()
             self.current_weapon = None
+
+    def create_magic(self):
+        style = self.player.magic
+        strength = MAGIC_DATA[style]["strength"]
+        cost = MAGIC_DATA[style]["cost"]
 
     def run(self):
         self.group_visible.update()

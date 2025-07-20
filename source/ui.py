@@ -14,10 +14,8 @@ class UI:
         self.ep_rect = pg.Rect(10, 35, EP_BAR_WIDTH, BAR_HEIGHT)
 
     def load_assets(self):
-        # WEAPON GRAPHIC.
-        self.weapon_graphic = [
-            load_image(data["image"]) for data in WEAPON_DATA.values()
-        ]
+        self.weapon_graphic = [load_image(e["image"]) for e in WEAPON_DATA.values()]
+        self.magic_graphic = [load_image(e["image"]) for e in MAGIC_DATA.values()]
 
     def set_player(self, player):
         self.player = player
@@ -69,7 +67,13 @@ class UI:
         self.draw_exp()
         self.preview_attack(
             self.weapon_graphic,
-            (10, 630),
+            WEAPON_PREVIEW_PLACE,
             self.player.weapon_index,
             self.player.can_switch_weapon,
+        )
+        self.preview_attack(
+            self.magic_graphic,
+            MAGIC_PREVIEW_PLACE,
+            self.player.magic_index,
+            self.player.can_switch_magic,
         )

@@ -7,7 +7,9 @@ from sprites import Entity
 
 class Player(Entity):
 
-    def __init__(self, groups, place, group_obstacle, create_weapon, cancel_weapon):
+    def __init__(
+        self, groups, place, group_obstacle, create_weapon, cancel_weapon, create_magic
+    ):
         super().__init__(groups)
 
         # ANIMATION.
@@ -38,10 +40,16 @@ class Player(Entity):
         self.weapon_index = 0
         self.weapon = WEAPON_TYPES[self.weapon_index]
         self.can_switch_weapon = True
+        # MAGIC.
+        self.create_magic = create_magic
+        self.magic_index = 0
+        self.magic = MAGIC_TYPES[self.magic_index]
+        self.can_switch_magic = True
         # TIMERS.
         self.timers = {
             "attack": Timer(None, command=self.refresh_attack),
             "switch_weapon": Timer(200, command=self.refresh_switch_weapon),
+            "switch_magic": Timer(200, command=self.refresh_switch_magic),
         }
 
     def load_assets(self):
@@ -54,6 +62,9 @@ class Player(Entity):
     def refresh_switch_weapon(self):
         self.can_switch_weapon = True
 
+    def refresh_switch_magic(self):
+        self.can_switch_magic = True
+
     def cooldown(self):
         for timer in self.timers.values():
             timer.update()
@@ -63,6 +74,12 @@ class Player(Entity):
         if self.weapon_index > len(WEAPON_TYPES) - 1:
             self.weapon_index = 0
         self.weapon = WEAPON_TYPES[self.weapon_index]
+
+    def switch_magic(self):
+        self.magic_index += 1
+        if self.magic_index > len(MAGIC_TYPES) - 1:
+            self.magic_index = 0
+        self.magic = MAGIC_TYPES[self.magic_index]
 
     def input(self):
         keys = pg.key.get_pressed()
@@ -97,12 +114,20 @@ class Player(Entity):
 
             if keys[pg.K_LCTRL]:
                 self.is_attacking = True
-                self.timers["attack"].activate()
+                timer = self.timers["attack"]
+                timer.set_duration(self.attack_cooldown)
+                timer.activate()
+                self.create_magic()
         # SWITCH.
         if keys[pg.K_q] and self.can_switch_weapon:
             self.can_switch_weapon = False
             self.timers["switch_weapon"].activate()
             self.switch_weapon()
+
+        if keys[pg.K_e] and self.can_switch_magic:
+            self.can_switch_magic = False
+            self.timers["switch_magic"].activate()
+            self.switch_magic()
 
     def get_status(self):
         # IDLE.

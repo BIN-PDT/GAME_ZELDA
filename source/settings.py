@@ -51,6 +51,7 @@ UI_BORDER_COLOR_ACTIVE = "GOLD"
 HP_COLOR = "RED"
 EP_COLOR = "BLUE"
 # WEAPON DATA.
+WEAPON_PREVIEW_PLACE = 10, 620
 WEAPON_DATA = {
     "axe": {"cooldown": 300, "damage": 20, "image": "images/weapons/axe/full.png"},
     "sai": {"cooldown": 100, "damage": 10, "image": "images/weapons/sai/full.png"},
@@ -59,3 +60,10 @@ WEAPON_DATA = {
     "rapier": {"cooldown": 50, "damage": 5, "image": "images/weapons/rapier/full.png"},
 }
 WEAPON_TYPES = tuple(WEAPON_DATA.keys())
+# MAGIC DATA.
+MAGIC_PREVIEW_PLACE = 80, 630
+MAGIC_DATA = {
+    "flame": {"strength": 5, "cost": 20, "image": "images/particles/flame/fire.png"},
+    "heal": {"strength": 20, "cost": 10, "image": "images/particles/heal/heal.png"},
+}
+MAGIC_TYPES = tuple(MAGIC_DATA.keys())
