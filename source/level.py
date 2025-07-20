@@ -17,6 +17,8 @@ class Level:
         # GROUP.
         self.group_visible = CameraGroup()
         self.group_obstacle = pg.sprite.Group()
+        self.group_attack = pg.sprite.Group()
+        self.group_attackable = pg.sprite.Group()
         # SETUP.
         self.ui = UI()
         self.load_map()
@@ -35,7 +37,11 @@ class Level:
                     match style:
                         case "Grass":
                             Tile(
-                                groups=(self.group_visible, self.group_obstacle),
+                                groups=(
+                                    self.group_visible,
+                                    self.group_obstacle,
+                                    self.group_attackable,
+                                ),
                                 place=place,
                                 form=SpriteForm.GRASS,
                                 image=choice(graphic[style]),
@@ -50,10 +56,11 @@ class Level:
                         case "Entity":
                             if col != "394":
                                 Enemy(
-                                    groups=self.group_visible,
+                                    groups=(self.group_visible, self.group_attackable),
                                     name=MONSTER_ID[int(col)],
                                     place=place,
                                     group_obstacle=self.group_obstacle,
+                                    damage_player=self.damage_player,
                                 )
                             else:
                                 self.player = Player(
@@ -73,14 +80,32 @@ class Level:
                             )
 
     def create_weapon(self):
-        return Weapon(self.group_visible, self.player)
+        return Weapon((self.group_visible, self.group_attack), self.player)
 
     def create_magic(self):
         style = self.player.magic
         strength = MAGIC_DATA[style]["strength"]
         cost = MAGIC_DATA[style]["cost"]
 
+    def damage_player(self, amount, form):
+        if not self.player.timers["vulnerability"].is_active:
+            self.player.health -= amount
+            self.player.timers["vulnerability"].activate()
+
+    def check_player_attack(self):
+        for attack_sprite in self.group_attack.sprites():
+            attacked_sprites = pg.sprite.spritecollide(
+                attack_sprite, self.group_attackable, False
+            )
+
+            for sprite in attacked_sprites:
+                if sprite.form == SpriteForm.GRASS:
+                    sprite.kill()
+                else:
+                    sprite.get_damage(self.player.get_attack_damage(attack_sprite.form))
+
     def run(self):
         self.group_visible.update()
+        self.check_player_attack()
         self.group_visible.draws()
         self.ui.display()

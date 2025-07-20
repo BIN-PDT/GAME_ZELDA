@@ -1,4 +1,5 @@
 from settings import *
+from math import sin
 import pygame as pg
 
 
@@ -47,3 +48,13 @@ class Entity(pg.sprite.Sprite):
         self.collide("V")
 
         self.rect.center = self.hitbox.center
+
+    def check_flickering(self):
+        self.image.set_alpha(
+            255
+            * (
+                sin(pg.time.get_ticks()) > 0
+                if self.timers["vulnerability"].is_active
+                else 1
+            )
+        )

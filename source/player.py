@@ -43,6 +43,7 @@ class Player(Entity):
             "attack": Timer(400),
             "switch_weapon": Timer(200),
             "switch_magic": Timer(200),
+            "vulnerability": Timer(500),
         }
 
     def load_assets(self):
@@ -141,3 +142,11 @@ class Player(Entity):
         self.move()
         self.get_status()
         self.animate()
+        self.check_flickering()
+
+    def get_attack_damage(self, form):
+        return (
+            self.stats["ATK"] + WEAPON_DATA[self.weapon]["damage"]
+            if form == SpriteForm.WEAPON
+            else self.stats["MAG"] + MAGIC_DATA[self.magic]["strength"]
+        )

@@ -7,7 +7,7 @@ from sprites import Entity
 
 class Enemy(Entity):
 
-    def __init__(self, groups, name, place, group_obstacle):
+    def __init__(self, groups, name, place, group_obstacle, damage_player):
         super().__init__(groups)
         # ANIMATION.
         self.load_assets(name)
@@ -33,8 +33,10 @@ class Enemy(Entity):
         self.direction = pg.math.Vector2()
         # COLLISION.
         self.group_obstacle = group_obstacle
+        # ATTACK.
+        self.damage_player = damage_player
         # TIMERS.
-        self.timers = {"attack": Timer(750)}
+        self.timers = {"attack": Timer(750), "vulnerability": Timer(300)}
 
     def load_assets(self, name):
         self.animations = load_image_dict(f"images/monsters/{name}")
@@ -71,7 +73,7 @@ class Enemy(Entity):
     def get_action(self, player):
         match self.status:
             case EnemyStatus.ATTACK:
-                pass
+                self.damage_player(self.attack, self.form)
             case EnemyStatus.MOVE:
                 self.direction.update(self.get_target(player)[1])
             case EnemyStatus.IDLE:
@@ -96,5 +98,21 @@ class Enemy(Entity):
 
     def update(self):
         self.cooldown()
+        self.check_resistance()
         self.move()
         self.animate()
+        self.check_flickering()
+
+    def check_resistance(self):
+        if self.timers["vulnerability"].is_active:
+            self.direction *= -self.resistance
+
+    def check_death(self):
+        if self.health <= 0:
+            self.kill()
+
+    def get_damage(self, amount):
+        if not self.timers["vulnerability"].is_active:
+            self.health -= amount
+            self.check_death()
+            self.timers["vulnerability"].activate()
