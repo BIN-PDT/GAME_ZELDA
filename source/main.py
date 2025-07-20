@@ -24,7 +24,7 @@ class Game:
                 sys.exit()
 
     def handle_logic(self):
-        self.screen.fill("BLACK")
+        self.screen.fill(WATER_COLOR)
         self.level.run()
         pg.display.update()
         self.clock.tick(60)

@@ -19,8 +19,13 @@ class Player(Entity):
         self.image = self.animations[self.status][self.frame_index]
         self.rect = self.image.get_rect(topleft=place)
         self.hitbox = self.rect.inflate(0, -26)
+        # STATS.
+        self.stats = {"HP": 100, "EP": 100, "ATK": 10, "MAG": 4, "SPD": 5}
+        self.health = self.stats["HP"]
+        self.energy = self.stats["EP"]
+        self.speed = self.stats["SPD"]
+        self.exp = 0
         # MOVEMENT.
-        self.speed = 5
         self.direction = pg.math.Vector2()
         # COLLISION.
         self.group_obstacle = group_obstacle

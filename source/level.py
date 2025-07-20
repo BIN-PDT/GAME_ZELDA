@@ -2,6 +2,7 @@ from settings import *
 from utils import *
 from random import choice
 import pygame as pg
+from ui import UI
 from camera import CameraGroup
 from sprites import Tile
 from player import Player
@@ -17,6 +18,8 @@ class Level:
         self.group_obstacle = pg.sprite.Group()
         # ATTACK.
         self.current_weapon = None
+        # USER INTERFACE.
+        self.ui = UI()
         # SETUP.
         self.load_map()
 
@@ -56,6 +59,7 @@ class Level:
                                     cancel_weapon=self.cancel_weapon,
                                 )
                                 self.group_visible.set_player(self.player)
+                                self.ui.set_player(self.player)
                         case "Boundary":
                             Tile(
                                 groups=self.group_obstacle,
@@ -74,3 +78,4 @@ class Level:
     def run(self):
         self.group_visible.update()
         self.group_visible.draws()
+        self.ui.display()

@@ -35,6 +35,21 @@ GRAPHIC_PATHS = {
     "Grass": "images/grass",
     "Object": "images/objects",
 }
+# UI.
+UI_FONT = "font/joystix.ttf"
+UI_FONT_SIZE = 18
+BAR_HEIGHT = 20
+HP_BAR_WIDTH = 200
+EP_BAR_WIDTH = 140
+ITEM_BOX_SIZE = 80
+# COLORS.
+WATER_COLOR = "#71DDEE"
+UI_BG_COLOR = "#222222"
+TEXT_COLOR = "#EEEEEE"
+UI_BORDER_COLOR = "#111111"
+UI_BORDER_COLOR_ACTIVE = "GOLD"
+HP_COLOR = "RED"
+EP_COLOR = "BLUE"
 # WEAPON DATA.
 WEAPON_DATA = {
     "axe": {"cooldown": 300, "damage": 20, "image": "images/weapons/axe/full.png"},
