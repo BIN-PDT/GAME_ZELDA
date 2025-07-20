@@ -17,11 +17,8 @@ class Level:
         # GROUP.
         self.group_visible = CameraGroup()
         self.group_obstacle = pg.sprite.Group()
-        # ATTACK.
-        self.current_weapon = None
-        # USER INTERFACE.
-        self.ui = UI()
         # SETUP.
+        self.ui = UI()
         self.load_map()
 
     def load_map(self):
@@ -64,7 +61,6 @@ class Level:
                                     place=place,
                                     group_obstacle=self.group_obstacle,
                                     create_weapon=self.create_weapon,
-                                    cancel_weapon=self.cancel_weapon,
                                     create_magic=self.create_magic,
                                 )
                                 self.group_visible.set_player(self.player)
@@ -77,12 +73,7 @@ class Level:
                             )
 
     def create_weapon(self):
-        self.current_weapon = Weapon(self.group_visible, self.player)
-
-    def cancel_weapon(self):
-        if self.current_weapon:
-            self.current_weapon.kill()
-            self.current_weapon = None
+        return Weapon(self.group_visible, self.player)
 
     def create_magic(self):
         style = self.player.magic

@@ -40,18 +40,18 @@ class UI:
         self.screen.blit(text_surf, text_rect)
         pg.draw.rect(self.screen, UI_BORDER_COLOR, bg_rect, 3, border_radius=5)
 
-    def draw_option_box(self, place, can_switch):
+    def draw_option_box(self, place, is_switching):
         # INFORMATION.
         bg_rect = pg.Rect(place, (ITEM_BOX_SIZE, ITEM_BOX_SIZE))
-        boder_color = UI_BORDER_COLOR if can_switch else UI_BORDER_COLOR_ACTIVE
+        boder_color = UI_BORDER_COLOR if not is_switching else UI_BORDER_COLOR_ACTIVE
         # DRAW.
         pg.draw.rect(self.screen, UI_BG_COLOR, bg_rect, border_radius=5)
         pg.draw.rect(self.screen, boder_color, bg_rect, 3, border_radius=5)
         return bg_rect
 
-    def preview_attack(self, graphic, place, index, can_switch):
+    def preview_attack(self, graphic, place, index, is_switching):
         # INFORMATION.
-        bg_rect = self.draw_option_box(place, can_switch)
+        bg_rect = self.draw_option_box(place, is_switching)
         attack_surf = graphic[index]
         attack_rect = attack_surf.get_rect(center=bg_rect.center)
         # DRAW.
@@ -69,11 +69,11 @@ class UI:
             self.weapon_graphic,
             WEAPON_PREVIEW_PLACE,
             self.player.weapon_index,
-            self.player.can_switch_weapon,
+            self.player.timers["switch_weapon"].is_active,
         )
         self.preview_attack(
             self.magic_graphic,
             MAGIC_PREVIEW_PLACE,
             self.player.magic_index,
-            self.player.can_switch_magic,
+            self.player.timers["switch_magic"].is_active,
         )

@@ -7,11 +7,8 @@ from sprites import Entity
 
 class Player(Entity):
 
-    def __init__(
-        self, groups, place, group_obstacle, create_weapon, cancel_weapon, create_magic
-    ):
+    def __init__(self, groups, place, group_obstacle, create_weapon, create_magic):
         super().__init__(groups)
-
         # ANIMATION.
         self.load_assets()
         self.status = Direction.DOWN
@@ -31,12 +28,8 @@ class Player(Entity):
         self.direction = pg.math.Vector2()
         # COLLISION.
         self.group_obstacle = group_obstacle
-        # ATTACK.
-        self.is_attacking = False
-        self.attack_cooldown = 400
         # WEAPON.
         self.create_weapon = create_weapon
-        self.cancel_weapon = cancel_weapon
         self.weapon_index = 0
         self.weapon = WEAPON_TYPES[self.weapon_index]
         self.can_switch_weapon = True
@@ -47,23 +40,13 @@ class Player(Entity):
         self.can_switch_magic = True
         # TIMERS.
         self.timers = {
-            "attack": Timer(None, command=self.refresh_attack),
-            "switch_weapon": Timer(200, command=self.refresh_switch_weapon),
-            "switch_magic": Timer(200, command=self.refresh_switch_magic),
+            "attack": Timer(400),
+            "switch_weapon": Timer(200),
+            "switch_magic": Timer(200),
         }
 
     def load_assets(self):
         self.animations = load_image_dict(f"images/player")
-
-    def refresh_attack(self):
-        self.is_attacking = False
-        self.cancel_weapon()
-
-    def refresh_switch_weapon(self):
-        self.can_switch_weapon = True
-
-    def refresh_switch_magic(self):
-        self.can_switch_magic = True
 
     def cooldown(self):
         for timer in self.timers.values():
@@ -81,60 +64,64 @@ class Player(Entity):
             self.magic_index = 0
         self.magic = MAGIC_TYPES[self.magic_index]
 
-    def input(self):
-        keys = pg.key.get_pressed()
+    def input_movement(self, keys):
+        if keys[pg.K_LEFT]:
+            self.direction.x = -1
+            self.status = Direction.LEFT
+        elif keys[pg.K_RIGHT]:
+            self.direction.x = 1
+            self.status = Direction.RIGHT
+        else:
+            self.direction.x = 0
 
-        if not self.is_attacking:
-            # MOVEMENT.
-            if keys[pg.K_LEFT]:
-                self.direction.x = -1
-                self.status = Direction.LEFT
-            elif keys[pg.K_RIGHT]:
-                self.direction.x = 1
-                self.status = Direction.RIGHT
-            else:
-                self.direction.x = 0
+        if keys[pg.K_UP]:
+            self.direction.y = -1
+            self.status = Direction.UP
+        elif keys[pg.K_DOWN]:
+            self.direction.y = 1
+            self.status = Direction.DOWN
+        else:
+            self.direction.y = 0
 
-            if keys[pg.K_UP]:
-                self.direction.y = -1
-                self.status = Direction.UP
-            elif keys[pg.K_DOWN]:
-                self.direction.y = 1
-                self.status = Direction.DOWN
-            else:
-                self.direction.y = 0
-            # ATTACK.
-            if keys[pg.K_SPACE]:
-                self.is_attacking = True
-                timer = self.timers["attack"]
-                weapon_cooldown = WEAPON_DATA[self.weapon]["cooldown"]
-                timer.set_duration(self.attack_cooldown + weapon_cooldown)
-                timer.activate()
-                self.create_weapon()
+    def input_attack(self, keys):
+        if keys[pg.K_SPACE]:
+            weapon = self.create_weapon()
+            timer = self.timers["attack"]
+            timer.set_bonus_time(WEAPON_DATA[self.weapon]["cooldown"])
+            timer.set_command(weapon.kill)
+            timer.activate()
 
-            if keys[pg.K_LCTRL]:
-                self.is_attacking = True
-                timer = self.timers["attack"]
-                timer.set_duration(self.attack_cooldown)
-                timer.activate()
-                self.create_magic()
-        # SWITCH.
-        if keys[pg.K_q] and self.can_switch_weapon:
-            self.can_switch_weapon = False
-            self.timers["switch_weapon"].activate()
+        if keys[pg.K_LCTRL]:
+            self.create_magic()
+            timer = self.timers["attack"]
+            timer.set_bonus_time(0)
+            timer.set_command(None)
+            timer.activate()
+
+    def input_switch(self, keys):
+        if keys[pg.K_q] and not self.timers["switch_weapon"].is_active:
             self.switch_weapon()
+            self.timers["switch_weapon"].activate()
 
-        if keys[pg.K_e] and self.can_switch_magic:
-            self.can_switch_magic = False
-            self.timers["switch_magic"].activate()
+        if keys[pg.K_e] and not self.timers["switch_magic"].is_active:
             self.switch_magic()
+            self.timers["switch_magic"].activate()
+
+    def input(self):
+        # INFORMATION.
+        keys = pg.key.get_pressed()
+        # PROCESS.
+        if not self.timers["attack"].is_active:
+            self.input_movement(keys)
+            self.input_attack(keys)
+        self.input_switch(keys)
 
     def get_status(self):
         # IDLE.
         if self.direction == (0, 0):
             self.status = self.status.split("_")[0] + "_idle"
         # ATTACK.
-        if self.is_attacking:
+        if self.timers["attack"].is_active:
             self.direction.update()
             self.status = self.status.split("_")[0] + "_attack"
 
@@ -151,6 +138,6 @@ class Player(Entity):
     def update(self):
         self.cooldown()
         self.input()
+        self.move()
         self.get_status()
         self.animate()
-        self.move()
