@@ -8,7 +8,7 @@ from sprites import Entity
 class Player(Entity):
 
     def __init__(self, groups, place, group_obstacle, create_weapon, create_magic):
-        super().__init__(groups)
+        super().__init__(groups, group_obstacle)
         # ANIMATION.
         self.load_assets()
         self.status = Direction.DOWN
@@ -24,20 +24,14 @@ class Player(Entity):
         self.energy = self.stats["EP"]
         self.speed = self.stats["SPD"]
         self.exp = 0
-        # MOVEMENT.
-        self.direction = pg.math.Vector2()
-        # COLLISION.
-        self.group_obstacle = group_obstacle
         # WEAPON.
         self.create_weapon = create_weapon
         self.weapon_index = 0
         self.weapon = WEAPON_TYPES[self.weapon_index]
-        self.can_switch_weapon = True
         # MAGIC.
         self.create_magic = create_magic
         self.magic_index = 0
         self.magic = MAGIC_TYPES[self.magic_index]
-        self.can_switch_magic = True
         # TIMERS.
         self.timers = {
             "attack": Timer(400),
@@ -52,12 +46,23 @@ class Player(Entity):
     def set_energy(self, value):
         self.energy = max(0, min(self.stats["EP"], self.energy + value))
 
+    def get_attack_damage(self, form):
+        return (
+            self.stats["ATK"] + WEAPON_DATA[self.weapon]["damage"]
+            if form == SpriteForm.WEAPON
+            else self.stats["MAG"] + MAGIC_DATA[self.magic]["strength"]
+        )
+
     def load_assets(self):
         self.animations = load_image_dict(f"images/player")
 
     def cooldown(self):
         for timer in self.timers.values():
             timer.update()
+
+    def recovery(self):
+        if self.energy < self.stats["EP"]:
+            self.set_energy(ENERGY_RECOVERY * self.stats["MAG"])
 
     def switch_weapon(self):
         self.weapon_index += 1
@@ -142,22 +147,11 @@ class Player(Entity):
         self.image = animation[int(self.frame_index)]
         self.rect = self.image.get_rect(center=self.hitbox.center)
 
-    def recovery_energy(self):
-        if self.energy < self.stats["EP"]:
-            self.set_energy(ENERGY_RECOVERY * self.stats["MAG"])
-
     def update(self):
         self.cooldown()
-        self.recovery_energy()
+        self.recovery()
         self.input()
         self.move()
         self.get_status()
         self.animate()
-        self.check_flickering()
-
-    def get_attack_damage(self, form):
-        return (
-            self.stats["ATK"] + WEAPON_DATA[self.weapon]["damage"]
-            if form == SpriteForm.WEAPON
-            else self.stats["MAG"] + MAGIC_DATA[self.magic]["strength"]
-        )
+        self.flicker()

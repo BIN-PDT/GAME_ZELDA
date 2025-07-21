@@ -122,7 +122,9 @@ class Level:
                         sprite.rect.center, self.group_visible
                     )
                 else:
-                    sprite.get_damage(self.player.get_attack_damage(attack_sprite.form))
+                    sprite.get_damaged(
+                        self.player.get_attack_damage(attack_sprite.form)
+                    )
 
     def create_death_effect(self, place, form):
         self.particle_controller.create_particles(place, form, self.group_visible)

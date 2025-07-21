@@ -19,8 +19,12 @@ class Tile(pg.sprite.Sprite):
 
 class Entity(pg.sprite.Sprite):
 
-    def __init__(self, groups):
+    def __init__(self, groups, group_obstacle):
         super().__init__(groups)
+        # MOVEMENT.
+        self.direction = pg.math.Vector2()
+        # COLLISION.
+        self.group_obstacle = group_obstacle
 
     def collide(self, direction):
         if direction == "H":
@@ -49,7 +53,7 @@ class Entity(pg.sprite.Sprite):
 
         self.rect.center = self.hitbox.center
 
-    def check_flickering(self):
+    def flicker(self):
         self.image.set_alpha(
             255
             * (
