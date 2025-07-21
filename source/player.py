@@ -23,6 +23,7 @@ class Player(Entity):
         self.hitbox = self.rect.inflate(0, -26)
         # STATS.
         self.stats = {"HP": 100, "EP": 100, "ATK": 10, "MAG": 4, "SPD": 5}
+        self.costs = {"HP": 100, "EP": 100, "ATK": 100, "MAG": 100, "SPD": 100}
         self.health = self.stats["HP"]
         self.energy = self.stats["EP"]
         self.speed = self.stats["SPD"]
@@ -42,7 +43,7 @@ class Player(Entity):
         }
 
     def set_exp(self, value):
-        self.exp += value
+        self.exp = max(0, self.exp + value)
 
     def set_health(self, value):
         self.health = max(0, min(self.stats["HP"], self.health + value))
@@ -56,6 +57,16 @@ class Player(Entity):
             if form == SpriteForm.WEAPON
             else self.stats["MAG"] + MAGIC_DATA[self.magic]["strength"]
         )
+
+    def get_stat_by_index(self, index):
+        return tuple(self.stats.values())[index]
+
+    def get_cost_by_index(self, index):
+        return tuple(self.costs.values())[index]
+
+    def upgrade_stat(self, name):
+        self.stats[name] = min(MAX_STATS[name], self.stats[name] * 1.2)
+        self.costs[name] *= 1.4
 
     def load_assets(self):
         self.animations = load_image_dict(f"images/player")

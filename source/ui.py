@@ -5,9 +5,11 @@ import pygame as pg
 
 class UI:
 
-    def __init__(self):
+    def __init__(self, player):
         self.screen = pg.display.get_surface()
         self.font = pg.font.Font(UI_FONT, UI_FONT_SIZE)
+        # CORE.
+        self.player = player
         self.load_assets()
         # BAR SETUP.
         self.hp_rect = pg.Rect(10, 10, HP_BAR_WIDTH, BAR_HEIGHT)
@@ -17,9 +19,6 @@ class UI:
         self.weapon_graphic = [load_image(e["image"]) for e in WEAPON_DATA.values()]
         self.magic_graphic = [load_image(e["image"]) for e in MAGIC_DATA.values()]
 
-    def set_player(self, player):
-        self.player = player
-
     def draw_bar(self, current, maximum, bg_rect, color):
         # INFORMATION.
         current_rect = bg_rect.copy()
@@ -27,7 +26,7 @@ class UI:
         # DRAW.
         pg.draw.rect(self.screen, UI_BG_COLOR, bg_rect, border_radius=5)
         pg.draw.rect(self.screen, color, current_rect, border_radius=5)
-        pg.draw.rect(self.screen, UI_BORDER_COLOR, bg_rect, 3, border_radius=5)
+        pg.draw.rect(self.screen, BORDER_COLOR, bg_rect, 3, border_radius=5)
 
     def draw_exp(self):
         # INFORMATION.
@@ -38,12 +37,12 @@ class UI:
         # DRAW.
         pg.draw.rect(self.screen, UI_BG_COLOR, bg_rect, border_radius=5)
         self.screen.blit(text_surf, text_rect)
-        pg.draw.rect(self.screen, UI_BORDER_COLOR, bg_rect, 3, border_radius=5)
+        pg.draw.rect(self.screen, BORDER_COLOR, bg_rect, 3, border_radius=5)
 
     def draw_option_box(self, place, is_switching):
         # INFORMATION.
         bg_rect = pg.Rect(place, (ITEM_BOX_SIZE, ITEM_BOX_SIZE))
-        boder_color = UI_BORDER_COLOR if not is_switching else UI_BORDER_COLOR_ACTIVE
+        boder_color = BORDER_COLOR if not is_switching else BORDER_COLOR_ACTIVE
         # DRAW.
         pg.draw.rect(self.screen, UI_BG_COLOR, bg_rect, border_radius=5)
         pg.draw.rect(self.screen, boder_color, bg_rect, 3, border_radius=5)

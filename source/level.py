@@ -10,6 +10,7 @@ from enemy import Enemy
 from weapon import Weapon
 from particle import ParticleController
 from magic import MagicController
+from menu import Menu
 
 
 class Level:
@@ -22,10 +23,13 @@ class Level:
         self.group_attack = pg.sprite.Group()
         self.group_attackable = pg.sprite.Group()
         # SETUP.
-        self.ui = UI()
+        self.is_active = True
+        self.load_map()
+        # CONTROLLER.
+        self.ui = UI(self.player)
+        self.menu = Menu(self.player)
         self.particle_controller = ParticleController()
         self.magic_controller = MagicController(self.particle_controller)
-        self.load_map()
 
     def load_map(self):
         layouts = {key: load_layout(path) for key, path in LAYOUT_PATHS.items()}
@@ -77,7 +81,6 @@ class Level:
                                     create_magic=self.create_magic,
                                 )
                                 self.group_visible.set_player(self.player)
-                                self.ui.set_player(self.player)
                         case "Boundary":
                             Tile(
                                 groups=self.group_obstacle,
@@ -133,8 +136,16 @@ class Level:
     def increase_experience(self, amount):
         self.player.set_exp(amount)
 
+    def toggle_menu(self):
+        self.is_active = not self.is_active
+
     def run(self):
-        self.group_visible.update()
-        self.check_player_attack()
         self.group_visible.draws()
         self.ui.display()
+
+        if self.is_active:
+            self.group_visible.update()
+            self.check_player_attack()
+        else:
+            self.menu.update()
+            self.menu.display()

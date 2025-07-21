@@ -22,6 +22,9 @@ class Game:
             if event.type == pg.QUIT:
                 pg.quit()
                 sys.exit()
+            if event.type == pg.KEYDOWN:
+                if event.key == pg.K_m:
+                    self.level.toggle_menu()
 
     def handle_logic(self):
         self.screen.fill(WATER_COLOR)
