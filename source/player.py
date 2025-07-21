@@ -67,6 +67,7 @@ class Player(Entity):
     def upgrade_stat(self, name):
         self.stats[name] = min(MAX_STATS[name], self.stats[name] * 1.2)
         self.costs[name] *= 1.4
+        self.speed = self.stats["SPD"]
 
     def load_assets(self):
         self.animations = load_image_dict(f"images/player")
