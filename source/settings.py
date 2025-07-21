@@ -16,7 +16,6 @@ class SpriteForm(StrEnum):
     OBJECT = "Object"
     PLAYER = "Player"
     WEAPON = "Weapon"
-    MAGIC = "Magic"
     ENEMY = "Enemy"
     PARTICLE = "Particle"
 
@@ -32,6 +31,7 @@ class EnemyStatus(StrEnum):
 WIDTH, HEIGTH = 1280, 720
 TILE_SIZE = 64
 ANIMATION_SPEED = 0.15
+ENERGY_RECOVERY = 0.005
 # MAP DATA.
 LAYOUT_PATHS = {
     "Grass": "map/Grass.csv",

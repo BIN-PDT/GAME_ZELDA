@@ -46,6 +46,12 @@ class Player(Entity):
             "vulnerability": Timer(500),
         }
 
+    def set_health(self, value):
+        self.health = max(0, min(self.stats["HP"], self.health + value))
+
+    def set_energy(self, value):
+        self.energy = max(0, min(self.stats["EP"], self.energy + value))
+
     def load_assets(self):
         self.animations = load_image_dict(f"images/player")
 
@@ -136,8 +142,13 @@ class Player(Entity):
         self.image = animation[int(self.frame_index)]
         self.rect = self.image.get_rect(center=self.hitbox.center)
 
+    def recovery_energy(self):
+        if self.energy < self.stats["EP"]:
+            self.set_energy(ENERGY_RECOVERY * self.stats["MAG"])
+
     def update(self):
         self.cooldown()
+        self.recovery_energy()
         self.input()
         self.move()
         self.get_status()

@@ -9,6 +9,7 @@ from player import Player
 from enemy import Enemy
 from weapon import Weapon
 from particle import ParticleController
+from magic import MagicController
 
 
 class Level:
@@ -23,6 +24,7 @@ class Level:
         # SETUP.
         self.ui = UI()
         self.particle_controller = ParticleController()
+        self.magic_controller = MagicController(self.particle_controller)
         self.load_map()
 
     def load_map(self):
@@ -89,6 +91,15 @@ class Level:
         style = self.player.magic
         strength = MAGIC_DATA[style]["strength"]
         cost = MAGIC_DATA[style]["cost"]
+
+        if style == "heal":
+            self.magic_controller.cast_heal(
+                self.player, cost, strength, self.group_visible
+            )
+        else:
+            self.magic_controller.cast_fire(
+                self.player, cost, (self.group_visible, self.group_attack)
+            )
 
     def damage_player(self, amount, form):
         if not self.player.timers["vulnerability"].is_active:
