@@ -8,7 +8,7 @@ class Tile(pg.sprite.Sprite):
 
     def __init__(self, groups, place, form, image=None):
         super().__init__(groups)
-
+        # CORE.
         self.form = form
         self.image = image or Tile.surface
         self.rect = self.image.get_rect(topleft=place)

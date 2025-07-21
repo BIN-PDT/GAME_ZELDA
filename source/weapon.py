@@ -7,7 +7,7 @@ class Weapon(pg.sprite.Sprite):
 
     def __init__(self, groups, player):
         super().__init__(groups)
-
+        # CORE.
         self.form = SpriteForm.WEAPON
         direction = player.status.split("_")[0]
         self.image = load_image(f"images/weapons/{player.weapon}/{direction}.png")

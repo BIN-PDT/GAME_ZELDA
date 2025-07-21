@@ -8,14 +8,24 @@ from sprites import Entity
 class Enemy(Entity):
 
     def __init__(
-        self, groups, name, place, group_obstacle, damage_player, create_death_effect
+        self,
+        groups,
+        name,
+        place,
+        group_obstacle,
+        damage_player,
+        create_death_effect,
+        increase_experience,
     ):
         super().__init__(groups, group_obstacle)
+        # INTERACTION.
+        self.damage_player = damage_player
+        self.create_death_effect = create_death_effect
+        self.increase_experience = increase_experience
         # ANIMATION.
         self.load_assets(name)
         self.status = EnemyStatus.IDLE
         self.frame_index = 0
-        self.create_death_effect = create_death_effect
         # CORE.
         self.form = SpriteForm.ENEMY
         self.image = self.animations[self.status][self.frame_index]
@@ -32,8 +42,6 @@ class Enemy(Entity):
         self.notice_radius = stats["NTC_RAD"]
         self.attack_radius = stats["ATK_RAD"]
         self.attack_type = stats["ATK_TYPE"]
-        # ATTACK.
-        self.damage_player = damage_player
         # TIMERS.
         self.timers = {"attack": Timer(750), "vulnerability": Timer(300)}
 
@@ -103,6 +111,7 @@ class Enemy(Entity):
         if self.health <= 0:
             self.kill()
             self.create_death_effect(self.name, self.rect.center)
+            self.increase_experience(self.exp)
 
     def get_damaged(self, amount):
         if not self.timers["vulnerability"].is_active:

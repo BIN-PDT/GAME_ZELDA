@@ -66,6 +66,7 @@ class Level:
                                     group_obstacle=self.group_obstacle,
                                     damage_player=self.damage_player,
                                     create_death_effect=self.create_death_effect,
+                                    increase_experience=self.increase_experience,
                                 )
                             else:
                                 self.player = Player(
@@ -128,6 +129,9 @@ class Level:
 
     def create_death_effect(self, place, form):
         self.particle_controller.create_particles(place, form, self.group_visible)
+
+    def increase_experience(self, amount):
+        self.player.set_exp(amount)
 
     def run(self):
         self.group_visible.update()

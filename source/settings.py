@@ -75,6 +75,11 @@ MAGIC_DATA = {
     "heal": {"strength": 20, "cost": 10, "image": "images/magics/heal/full.png"},
 }
 MAGIC_TYPES = tuple(MAGIC_DATA.keys())
+# PLAYER DATA.
+UPGRADE_DATA = {
+    "stat": {"HP": 300, "EP": 140, "ATK": 20, "MAG": 10, "SPD": 10},
+    "cost": {"HP": 100, "EP": 100, "ATK": 100, "MAG": 100, "SPD": 100},
+}
 # ENEMY DATA.
 MONSTER_ID = {390: "bamboo", 391: "spirit", 392: "raccoon", 393: "squid"}
 MONSTER_DATA = {

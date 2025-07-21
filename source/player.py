@@ -9,6 +9,9 @@ class Player(Entity):
 
     def __init__(self, groups, place, group_obstacle, create_weapon, create_magic):
         super().__init__(groups, group_obstacle)
+        # INTERACTION.
+        self.create_weapon = create_weapon
+        self.create_magic = create_magic
         # ANIMATION.
         self.load_assets()
         self.status = Direction.DOWN
@@ -25,11 +28,9 @@ class Player(Entity):
         self.speed = self.stats["SPD"]
         self.exp = 0
         # WEAPON.
-        self.create_weapon = create_weapon
         self.weapon_index = 0
         self.weapon = WEAPON_TYPES[self.weapon_index]
         # MAGIC.
-        self.create_magic = create_magic
         self.magic_index = 0
         self.magic = MAGIC_TYPES[self.magic_index]
         # TIMERS.
@@ -39,6 +40,9 @@ class Player(Entity):
             "switch_magic": Timer(200),
             "vulnerability": Timer(500),
         }
+
+    def set_exp(self, value):
+        self.exp += value
 
     def set_health(self, value):
         self.health = max(0, min(self.stats["HP"], self.health + value))
