@@ -7,12 +7,15 @@ from sprites import Entity
 
 class Enemy(Entity):
 
-    def __init__(self, groups, name, place, group_obstacle, damage_player):
+    def __init__(
+        self, groups, name, place, group_obstacle, damage_player, create_death_effect
+    ):
         super().__init__(groups)
         # ANIMATION.
         self.load_assets(name)
         self.status = EnemyStatus.IDLE
         self.frame_index = 0
+        self.create_death_effect = create_death_effect
         # CORE.
         self.form = SpriteForm.ENEMY
         self.image = self.animations[self.status][self.frame_index]
@@ -73,7 +76,7 @@ class Enemy(Entity):
     def get_action(self, player):
         match self.status:
             case EnemyStatus.ATTACK:
-                self.damage_player(self.attack, self.form)
+                self.damage_player(self.attack, self.attack_type)
             case EnemyStatus.MOVE:
                 self.direction.update(self.get_target(player)[1])
             case EnemyStatus.IDLE:
@@ -110,6 +113,7 @@ class Enemy(Entity):
     def check_death(self):
         if self.health <= 0:
             self.kill()
+            self.create_death_effect(self.name, self.rect.center)
 
     def get_damage(self, amount):
         if not self.timers["vulnerability"].is_active:

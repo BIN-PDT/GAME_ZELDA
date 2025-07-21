@@ -18,6 +18,7 @@ class SpriteForm(StrEnum):
     WEAPON = "Weapon"
     MAGIC = "Magic"
     ENEMY = "Enemy"
+    PARTICLE = "Particle"
 
 
 # ENEMY STATUS.
@@ -70,8 +71,8 @@ WEAPON_TYPES = tuple(WEAPON_DATA.keys())
 # MAGIC DATA.
 MAGIC_PREVIEW_PLACE = 80, 630
 MAGIC_DATA = {
-    "flame": {"strength": 5, "cost": 20, "image": "images/particles/flame/fire.png"},
-    "heal": {"strength": 20, "cost": 10, "image": "images/particles/heal/heal.png"},
+    "flame": {"strength": 5, "cost": 20, "image": "images/magics/flame/full.png"},
+    "heal": {"strength": 20, "cost": 10, "image": "images/magics/heal/full.png"},
 }
 MAGIC_TYPES = tuple(MAGIC_DATA.keys())
 # ENEMY DATA.
@@ -118,7 +119,7 @@ MONSTER_DATA = {
         "RES": 3,
         "NTC_RAD": 300,
         "ATK_RAD": 50,
-        "ATK_TYPE": "leaf_attack",
+        "ATK_TYPE": "leaf",
         "ATK_SOUND": "audio/attack/slash.wav",
     },
 }

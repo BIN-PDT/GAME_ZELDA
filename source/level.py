@@ -8,6 +8,7 @@ from sprites import Tile
 from player import Player
 from enemy import Enemy
 from weapon import Weapon
+from particle import ParticleController
 
 
 class Level:
@@ -21,6 +22,7 @@ class Level:
         self.group_attackable = pg.sprite.Group()
         # SETUP.
         self.ui = UI()
+        self.particle_controller = ParticleController()
         self.load_map()
 
     def load_map(self):
@@ -61,6 +63,7 @@ class Level:
                                     place=place,
                                     group_obstacle=self.group_obstacle,
                                     damage_player=self.damage_player,
+                                    create_death_effect=self.create_death_effect,
                                 )
                             else:
                                 self.player = Player(
@@ -91,6 +94,9 @@ class Level:
         if not self.player.timers["vulnerability"].is_active:
             self.player.health -= amount
             self.player.timers["vulnerability"].activate()
+            self.particle_controller.create_particles(
+                form, self.player.rect.center, self.group_visible
+            )
 
     def check_player_attack(self):
         for attack_sprite in self.group_attack.sprites():
@@ -101,8 +107,14 @@ class Level:
             for sprite in attacked_sprites:
                 if sprite.form == SpriteForm.GRASS:
                     sprite.kill()
+                    self.particle_controller.create_grass_particles(
+                        sprite.rect.center, self.group_visible
+                    )
                 else:
                     sprite.get_damage(self.player.get_attack_damage(attack_sprite.form))
+
+    def create_death_effect(self, place, form):
+        self.particle_controller.create_particles(place, form, self.group_visible)
 
     def run(self):
         self.group_visible.update()
