@@ -10,7 +10,7 @@ class Enemy(Entity):
     def __init__(
         self,
         groups,
-        name,
+        id,
         place,
         group_obstacle,
         damage_player,
@@ -18,22 +18,23 @@ class Enemy(Entity):
         increase_experience,
     ):
         super().__init__(groups, group_obstacle)
+        # GENERAL.
+        stats = MONSTER_DATA[id]
+        self.name = stats["NAME"]
         # INTERACTION.
         self.damage_player = damage_player
         self.create_death_effect = create_death_effect
         self.increase_experience = increase_experience
         # ANIMATION.
-        self.load_assets(name)
+        self.load_assets(self.name)
         self.status = EnemyStatus.IDLE
         self.frame_index = 0
         # CORE.
         self.form = SpriteForm.ENEMY
         self.image = self.animations[self.status][self.frame_index]
         self.rect = self.image.get_rect(topleft=place)
-        self.hitbox = self.rect.inflate(0, -10)
+        self.hitbox = self.rect.inflate(HITBOX_OFFSET[self.form])
         # STATS.
-        stats = MONSTER_DATA[name]
-        self.name = name
         self.health = stats["HP"]
         self.attack = stats["ATK"]
         self.speed = stats["SPD"]

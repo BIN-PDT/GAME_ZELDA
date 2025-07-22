@@ -20,7 +20,7 @@ class Player(Entity):
         self.form = SpriteForm.PLAYER
         self.image = self.animations[self.status][self.frame_index]
         self.rect = self.image.get_rect(topleft=place)
-        self.hitbox = self.rect.inflate(0, -26)
+        self.hitbox = self.rect.inflate(HITBOX_OFFSET[self.form])
         # STATS.
         self.stats = {"HP": 100, "EP": 100, "ATK": 10, "MAG": 4, "SPD": 5}
         self.costs = {"HP": 100, "EP": 100, "ATK": 100, "MAG": 100, "SPD": 100}

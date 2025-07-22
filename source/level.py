@@ -65,7 +65,7 @@ class Level:
                             if col != "394":
                                 Enemy(
                                     groups=(self.group_visible, self.group_attackable),
-                                    name=MONSTER_ID[int(col)],
+                                    id=int(col),
                                     place=place,
                                     group_obstacle=self.group_obstacle,
                                     damage_player=self.damage_player,

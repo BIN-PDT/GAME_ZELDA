@@ -14,7 +14,7 @@ class Tile(pg.sprite.Sprite):
         self.rect = self.image.get_rect(topleft=place)
         if self.form == SpriteForm.OBJECT:
             self.rect.y -= TILE_SIZE
-        self.hitbox = self.rect.inflate(0, -10)
+        self.hitbox = self.rect.inflate(HITBOX_OFFSET[self.form])
 
 
 class Entity(pg.sprite.Sprite):
