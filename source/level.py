@@ -111,7 +111,7 @@ class Level:
 
     def damage_player(self, amount, form):
         if not self.player.timers["vulnerability"].is_active:
-            self.player.health -= amount
+            self.player.set_health(-amount)
             self.player.timers["vulnerability"].activate()
             self.particle_controller.create_particles(
                 form, self.player.rect.center, self.group_visible
