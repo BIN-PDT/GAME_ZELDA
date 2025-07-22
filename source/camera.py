@@ -16,7 +16,7 @@ class CameraGroup(pg.sprite.Group):
         self.HALF_SIZE = pg.math.Vector2(self.screen.size) // 2
 
     def load_assets(self):
-        self.background = load_image("images/tilemap/ground.png", False)
+        self.background = load_image("images/map/ground.png", False)
 
     def set_player(self, player):
         self.player = player
