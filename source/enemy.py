@@ -45,6 +45,12 @@ class Enemy(Entity):
         self.attack_type = stats["ATK_TYPE"]
         # TIMERS.
         self.timers = {"attack": Timer(750), "vulnerability": Timer(300)}
+        # SOUNDS.
+        self.sounds = {
+            "hit": load_sound("audio/hit.wav", 0.5),
+            "death": load_sound("audio/death.wav", 0.5),
+            "attack": load_sound(stats["ATK_SOUND"], 0.3),
+        }
 
     def load_assets(self, name):
         self.animations = load_image_dict(f"images/monsters/{name}")
@@ -82,6 +88,7 @@ class Enemy(Entity):
         match self.status:
             case EnemyStatus.ATTACK:
                 self.damage_player(self.attack, self.attack_type)
+                self.sounds["attack"].play()
             case EnemyStatus.MOVE:
                 self.direction.update(self.get_target(player)[1])
             case EnemyStatus.IDLE:
@@ -113,9 +120,11 @@ class Enemy(Entity):
             self.kill()
             self.create_death_effect(self.name, self.rect.center)
             self.increase_experience(self.exp)
+            self.sounds["death"].play()
 
     def get_damaged(self, amount):
         if not self.timers["vulnerability"].is_active:
+            self.sounds["hit"].play()
             self.health -= amount
             self.check_death()
             self.timers["vulnerability"].activate()

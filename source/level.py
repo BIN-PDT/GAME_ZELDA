@@ -30,6 +30,10 @@ class Level:
         self.menu = Menu(self.player)
         self.particle_controller = ParticleController()
         self.magic_controller = MagicController(self.particle_controller)
+        # MUSIC.
+        pg.mixer.music.load("audio/music.ogg")
+        pg.mixer.music.set_volume(0.5)
+        pg.mixer.music.play(-1)
 
     def load_map(self):
         layouts = {key: load_layout(path) for key, path in LAYOUT_PATHS.items()}

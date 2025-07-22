@@ -1,11 +1,18 @@
 from os import walk
 from csv import reader
 from pygame.image import load
+from pygame.mixer import Sound
 
 
 def load_layout(file_path):
     with open(file_path) as file:
         return [row for row in reader(file, delimiter=",")]
+
+
+def load_sound(file_path, volume=1):
+    sound = Sound(file_path)
+    sound.set_volume(volume)
+    return sound
 
 
 def load_image(file_path, is_alpha=True):

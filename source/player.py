@@ -41,6 +41,12 @@ class Player(Entity):
             "switch_magic": Timer(200),
             "vulnerability": Timer(500),
         }
+        # AUDIO.
+        self.sounds = {
+            "weapon": load_sound("audio/sword.wav", 0.4),
+            "heal": load_sound("audio/heal.wav"),
+            "flame": load_sound("audio/fire.wav"),
+        }
 
     def set_exp(self, value):
         self.exp = max(0, self.exp + value)
@@ -118,6 +124,7 @@ class Player(Entity):
             timer.set_bonus_time(WEAPON_DATA[self.weapon]["cooldown"])
             timer.set_command(weapon.kill)
             timer.activate()
+            self.sounds["weapon"].play()
 
         if keys[pg.K_LCTRL]:
             self.create_magic()
@@ -125,6 +132,7 @@ class Player(Entity):
             timer.set_bonus_time(0)
             timer.set_command(None)
             timer.activate()
+            self.sounds[self.magic].play()
 
     def input_switch(self, keys):
         if keys[pg.K_q] and not self.timers["switch_weapon"].is_active:
